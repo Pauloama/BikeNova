@@ -41,9 +41,72 @@ public class BikeStationRepository : IBikeStationRepository
     public async Task<bool> Delete(int id)
     {
         var bikeStation = await _context.BikeStations.FindAsync(id);
-        if(bikeStation == null) return false;
+        if (bikeStation == null) return false;
         _context.BikeStations.Remove(bikeStation);
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<BikeStation?> AddBike(int stationId, int bikeId)
+    {
+        var station = await _context.BikeStations
+        .Include(s => s.Bikes)
+        .FirstOrDefaultAsync(s => s.Id == stationId);
+        if (station == null) return null;
+
+        if (station.Bikes.Count() >= 20)
+        {
+            throw new InvalidOperationException("O número máximo de bicicletas nesta estação foi atingido");
+        }
+
+        else
+        {
+
+            var bike = await _context.Bikes.FindAsync(bikeId);
+            if (bike == null) throw new KeyNotFoundException("Bicicleta não encontrada.");
+
+            bool bikeAlreadyOnStation = station.Bikes.Any(b => b.Id == bikeId);
+
+            if (bikeAlreadyOnStation)
+            {
+                throw new InvalidOperationException("Esta bicicleta já está nesta estação.");
+            }
+
+            station.Bikes.Add(bike);
+
+            await _context.SaveChangesAsync();
+
+            return station;
+        }
+    }
+
+    public async Task<BikeStation?> RemoveBike(int stationId, int bikeId)
+    {
+        var station = await _context.BikeStations
+        .Include(s => s.Bikes)
+        .FirstOrDefaultAsync(s => s.Id == stationId);
+        if (station == null) return null;
+
+        if (station.Bikes.Count() <= 0)
+        {
+            throw new InvalidOperationException("Não há bicicletas nessa estação.");
+        }
+
+
+        var bikeToRemove = station.Bikes.FirstOrDefault(b => b.Id == bikeId);
+        if (bikeToRemove == null) throw new KeyNotFoundException("Bicicleta não encontrada.");
+
+        bool bikeAlreadyOnStation = station.Bikes.Any(b => b.Id == bikeId);
+
+        if (!bikeAlreadyOnStation)
+        {
+            throw new InvalidOperationException("Esta bicicleta não está mais na estação.");
+        }
+
+        station.Bikes.Remove(bikeToRemove);
+
+        await _context.SaveChangesAsync();
+
+        return station;
     }
 }

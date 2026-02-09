@@ -9,4 +9,6 @@ public interface IBikeStationRepository
     Task<BikeStation> Add(BikeStation bikeStation);
     Task<BikeStation> Update(BikeStation bikeStation);
     Task<bool> Delete(int id);
+    Task<BikeStation?> AddBike (int stationId, int bikeId);
+    Task<BikeStation?> RemoveBike (int stationId, int bikeId);
 }
