@@ -86,28 +86,47 @@ public class BikeStationController : ControllerBase
         }
     }
 
-    [HttpPut]
-    public async Task<IActionResult> AddBike(BikeStationCreateDto bikeStationDto, BikeCreateDto bikeDto)
+    [HttpPost("{stationId}/bikes/{bikeId}")]
+    public async Task<IActionResult> AddBike(int bikeStationId, int bikeId)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        var bikeStation = _mapper.Map<BikeStation>(bikeStationDto);
-        var bike = _mapper.Map<Bike>(bikeDto);
-
-        await _repository.AddBike(bikeStation.Id, bike.Id);
-
-        return NoContent();
+        try
+        {
+            await _repository.AddBike(bikeStationId, bikeId);
+            return Ok("A bicicleta foi adicionada com sucesso à estação!");
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch(Exception ex)
+        {
+            return StatusCode(500, "Erro interno: "+ ex.Message);
+        }
     }
 
-    [HttpPut]
-    public async Task<IActionResult> RemoveBike(BikeStationCreateDto bikeStationDto, BikeCreateDto bikeDto)
+    [HttpDelete("{stationId}/bikes/{bikeId}")]
+    public async Task<IActionResult> RemoveBike(int stationId, int bikeId)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        var bikeStation = _mapper.Map<BikeStation>(bikeStationDto);
-        var bike = _mapper.Map<Bike>(bikeDto);
-
-        await _repository.RemoveBike(bikeStation.Id, bike.Id);
+        try
+        {
+            await _repository.RemoveBike(stationId, bikeId);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Erro interno: "+ ex.Message);
+        }
 
         return NoContent();
     }
