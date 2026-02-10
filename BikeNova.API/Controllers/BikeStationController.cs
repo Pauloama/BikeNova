@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BikeNova.API.Controllers;
+
 [Route("api/[controller]")]
 [ApiController]
 public class BikeStationController : ControllerBase
@@ -25,7 +26,7 @@ public class BikeStationController : ControllerBase
         var bikeStations = await _repository.GetAll();
 
         var bikeStationsDto = _mapper.Map<List<BikeResponseDto>>(bikeStations);
-        
+
         return Ok(bikeStationsDto);
     }
 
@@ -33,9 +34,9 @@ public class BikeStationController : ControllerBase
     public async Task<IActionResult> GetById(int id)
     {
         var bikeStation = await _repository.GetById(id);
-        
+
         var bikeStationDto = _mapper.Map<BikeResponseDto>(bikeStation);
-        
+
         return Ok(bikeStationDto);
     }
 
@@ -48,8 +49,8 @@ public class BikeStationController : ControllerBase
         var bikeStation = _mapper.Map<BikeStation>(bikeStationDto);
 
         await _repository.Add(bikeStation);
-        
-        return CreatedAtAction(nameof(GetById), new {id = bikeStation.Id}, bikeStation);
+
+        return CreatedAtAction(nameof(GetById), new { id = bikeStation.Id }, bikeStation);
     }
 
     [HttpPut("{id}")]
@@ -83,5 +84,31 @@ public class BikeStationController : ControllerBase
         {
             return BadRequest("Não é possível apagar essa estação de bike pois ela possui bikes adicionadas à ela.");
         }
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> AddBike(BikeStationCreateDto bikeStationDto, BikeCreateDto bikeDto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var bikeStation = _mapper.Map<BikeStation>(bikeStationDto);
+        var bike = _mapper.Map<Bike>(bikeDto);
+
+        await _repository.AddBike(bikeStation.Id, bike.Id);
+
+        return NoContent();
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> RemoveBike(BikeStationCreateDto bikeStationDto, BikeCreateDto bikeDto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var bikeStation = _mapper.Map<BikeStation>(bikeStationDto);
+        var bike = _mapper.Map<Bike>(bikeDto);
+
+        await _repository.RemoveBike(bikeStation.Id, bike.Id);
+
+        return NoContent();
     }
 }
