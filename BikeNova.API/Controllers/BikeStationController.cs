@@ -114,6 +114,7 @@ public class BikeStationController : ControllerBase
         try
         {
             await _repository.RemoveBike(stationId, bikeId);
+            return Ok("Bicicleta removida da estação com sucesso!");
         }
         catch (KeyNotFoundException ex)
         {
@@ -127,7 +128,5 @@ public class BikeStationController : ControllerBase
         {
             return StatusCode(500, "Erro interno: "+ ex.Message);
         }
-
-        return NoContent();
     }
 }
