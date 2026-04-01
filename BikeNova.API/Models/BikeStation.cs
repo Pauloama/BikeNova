@@ -2,10 +2,15 @@ namespace BikeNova.API.Models;
 
 public class BikeStation
 {
-    public int Id { get; set; }
-    public string Location { get; set; } = string.Empty;
-    public ICollection<Bike> Bikes { get; set; } = new List<Bike>();
+    private int Id { get; set; }
+    private string Location { get; set; } = string.Empty;
+    private ICollection<Bike> Bikes { get; set; } = new List<Bike>();
 
-    public int Capacity { get; set; } = 20;
-    public int Vacancies => Capacity - Bikes.Count;
+    private int Capacity { get; set; } = 20;
+    private int Vacancies => Capacity - Bikes.Count ;
+
+    public int GetVacancies()
+    {
+        return Vacancies;
+    }
 }

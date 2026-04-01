@@ -4,7 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useAppFonts } from "@/hooks/useAppFonts"
 import { Input } from "@/components/input";
 
-export default function Login() {
+export default function Register() {
     const isLoaded = useAppFonts()
     if (!isLoaded) {
         return null

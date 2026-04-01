@@ -4,8 +4,8 @@ namespace BikeNova.API.DTOs;
 
 public class BikeResponseDto
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public bool Unlocked {get;set;} = false;
-    public BikePlans UseTime {get;set;}
+    private int Id { get; set; }
+    private string Name { get; set; } = string.Empty;
+    private bool Unlocked {get;set;} = false;
+    private BikePlans UseTime {get;set;}
 }

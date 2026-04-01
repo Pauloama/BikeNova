@@ -5,9 +5,9 @@ namespace BikeNova.API.Models;
 
 public class Bike
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public bool Unlocked { get; set; } = false;
-    public BikePlans UseTime { get; set; }
-    public BikeStation? BikeStation { get; set; }
+    private int Id { get; set; }
+    private string Name { get; set; } = string.Empty;
+    private bool Unlocked { get; set; } = false;
+    private BikePlans UseTime { get; set; }
+    private BikeStation? BikeStation { get; set; }
 }
