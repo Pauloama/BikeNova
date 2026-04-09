@@ -28,8 +28,7 @@ public class AuthRepository : IAuthRepository
 
         CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-        user.PasswordHash = passwordHash;
-        user.PasswordSalt = passwordSalt;
+        user.SetPassword(passwordHash, passwordSalt);
 
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
