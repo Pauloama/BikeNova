@@ -14,11 +14,13 @@ public class AuthRepository : IAuthRepository
 {
     private readonly BikeNovaContext _context;
     private readonly IConfiguration _configuration;
+    private readonly UserRepository _userRepository;
 
-    public AuthRepository(BikeNovaContext context, IConfiguration configuration)
+    public AuthRepository(BikeNovaContext context, IConfiguration configuration, UserRepository userRepository)
     {
         _context = context;
         _configuration = configuration;
+        _userRepository = userRepository;
     }
 
     public async Task<int> Register(User user, string password)
@@ -30,7 +32,7 @@ public class AuthRepository : IAuthRepository
 
         user.SetPassword(passwordHash, passwordSalt);
 
-        await _context.Users.AddAsync(user);
+        await _userRepository.Add(user);
         await _context.SaveChangesAsync();
 
         return user.Id;

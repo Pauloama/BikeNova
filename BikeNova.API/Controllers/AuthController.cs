@@ -6,15 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BikeNova.API.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly IAuthRepository _repository;  
     private readonly IMapper _mapper;
 
-    public AuthController(IAuthRepository repository, IMapper mapper)
+    private readonly IUserRepository _userRepository;
+
+    public AuthController(IAuthRepository repository, IMapper mapper, IUserRepository userRepository)
     {
         _repository = repository;
         _mapper = mapper;
+        _userRepository = userRepository;
     }
 
     [HttpPost("register")]
@@ -24,7 +29,7 @@ public class AuthController : ControllerBase
         try
         {
             var userId = await _repository.Register(userToBe, userDto.Password);
-            return Ok(new {message = $"Usuário criado com sucesso! ID: {userId}"});
+            return CreatedAtAction(nameof(_userRepository.GetById), new {id = userId}, userToBe);
         }
         catch (Exception ex)
         {
@@ -33,7 +38,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult> Login(UserRegisterDto userDto)
+    public async Task<ActionResult> Login(UserLoginDto userDto)
     {
         try
         {

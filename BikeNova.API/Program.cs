@@ -1,3 +1,4 @@
+using AutoMapper;
 using BikeNova.API.Data;
 using BikeNova.API.Repositories;
 using BikeNova.API.Repositories.Interfaces;
@@ -9,9 +10,22 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var autoMapperLicense = builder.Configuration["AppSettings:MinhaLicenca"];
+
 builder.Services.AddDbContext<BikeNovaContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -47,11 +61,16 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(cfg => 
+{
+    cfg.LicenseKey = autoMapperLicense;
+    cfg.AddMaps(typeof(Program).Assembly);
+});
 
 builder.Services.AddScoped<IBikeRepository, BikeRepository>();
 builder.Services.AddScoped<IBikeStationRepository, BikeStationRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
