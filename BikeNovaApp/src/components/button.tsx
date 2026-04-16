@@ -32,8 +32,7 @@ export function Button({ label, cores,coresTexto, style , ...rest}: ButtonProps)
 
 const styles = StyleSheet.create({
     container: {
-        width: 318,
-        height: 44,
+        minHeight: 44,
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 8

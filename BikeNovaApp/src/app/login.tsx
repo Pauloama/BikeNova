@@ -1,10 +1,11 @@
-import { TextInput, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View, Text, Image, ImageBackground } from "react-native";
+import { TextInput, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View, Text, Image, ImageBackground, Dimensions } from "react-native";
 import { Button } from "@/components/button"
 import { LinearGradient } from "expo-linear-gradient";
 import { useAppFonts } from "@/hooks/useAppFonts"
 import { Input } from "@/components/input";
 
 export default function Login() {
+    const { width, height }= Dimensions.get("window")
     const isLoaded = useAppFonts()
     if (!isLoaded) {
         return null
@@ -12,10 +13,13 @@ export default function Login() {
     return (
         <ImageBackground
             source={require("@/assets/background.png")}
-            style={styles.background}
+            style={[styles.background, {height, width}]}
         >
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.select({ ios: "padding", android: "height" })}>
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}
+            <ScrollView contentContainerStyle={{ flexGrow: 1,
+                justifyContent: "center",
+                paddingVertical: 20
+             }}
                 keyboardShouldPersistTaps="handled"
                 showsVerticalScrollIndicator={false}
             >
@@ -30,7 +34,7 @@ export default function Login() {
                             <Text style={styles.subtitle}>Para começar a pedalar!</Text>
                         </View>
 
-                        <View>
+                        <View style={styles.formContainer}>
                             <Text style={styles.fieldNames}>E-mail</Text>
                             <TextInput style={styles.input}
                                 placeholder="digite seu e-mail"
@@ -40,7 +44,7 @@ export default function Login() {
                             <TextInput style={styles.input}
                                 placeholder="digite sua senha"
                                 placeholderTextColor={"#FFFFFF80"} />
-                            <Button label="Login"></Button>
+                            <Button label="Login" style={{width: "100%"}}></Button>
                         </View>
 
                         <Text style={styles.linksText}>Ou use suas redes sociais</Text>
@@ -65,11 +69,14 @@ const styles = StyleSheet.create({
         flex: 1,
         resizeMode: "cover"
     },
+    formContainer: {
+        width: "90%",
+        maxWidth: 400
+    },
     container: {
         flex: 1,
         alignItems: "center",
-        padding: 32,
-        justifyContent: "center"
+        paddingHorizontal: "5%",
     },
     illustration: {
         width: "100%",
@@ -77,7 +84,8 @@ const styles = StyleSheet.create({
         resizeMode: "contain",
     },
     header: {
-        width: 318,
+        width: "90%",
+        maxWidth: 400,
     },
     title: {
         fontFamily: "Roboto_700Bold",
@@ -106,6 +114,7 @@ const styles = StyleSheet.create({
         color: "#FFFFFF",
         fontSize: 16,
         marginBottom: 20,
+        paddingLeft: 6
     },
     input: {
         color: "#FFFFFF",
@@ -113,8 +122,8 @@ const styles = StyleSheet.create({
         borderColor: "#F57857",
         borderWidth: 3,
         borderRadius: 12,
-        height: 44,
-        width: 318,
+        minHeight: 44,
+        width: "100%",
         paddingLeft: 24,
         marginBottom: 24
     },
